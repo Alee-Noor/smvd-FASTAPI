@@ -11,17 +11,24 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+# Configure browser-like headers
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Referer': 'https://www.youtube.com/'
+}
+
 origins = [
-    "http://localhost:3000" # Your frontend URL
-     # Add production URL if needed
+    "http://localhost:3000"  # Your frontend URL
+    # Add production URL if needed
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Temporary storage for download progress
@@ -42,6 +49,8 @@ async def get_video_info(request: VideoRequest):
             'no_warnings': True,
             'skip_download': True,
             'format': 'best',
+            # Add custom headers here
+            'http_headers': HEADERS
         }
 
         with YoutubeDL(ydl_opts) as ydl:
@@ -78,6 +87,8 @@ async def download_video(request: DownloadRequest):
                 'format': request.format_id,
                 'outtmpl': temp_filename,
                 'progress_hooks': [progress_hook],
+                # Add headers to downloader too
+                'http_headers': HEADERS
             }
 
             with YoutubeDL(ydl_opts) as ydl:
@@ -105,6 +116,7 @@ async def download_video(request: DownloadRequest):
     asyncio.create_task(download_task())
     
     return {'download_id': download_id}
+
 
 @app.get("/api/progress/{download_id}")
 async def get_download_progress(download_id: str):
