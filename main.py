@@ -11,12 +11,17 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Configure CORS
+origins = [
+    "http://localhost:3000",  # Your frontend URL
+    "https://your-production-frontend.com"  # Add production URL if needed
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Temporary storage for download progress
