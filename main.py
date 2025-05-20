@@ -12,8 +12,8 @@ from pydantic import BaseModel
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",  # Your frontend URL
-    "https://your-production-frontend.com"  # Add production URL if needed
+    "http://localhost:3000" # Your frontend URL
+     # Add production URL if needed
 ]
 
 app.add_middleware(
