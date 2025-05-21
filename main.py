@@ -49,6 +49,7 @@ async def get_video_info(request: VideoRequest):
             'no_warnings': True,
             'skip_download': True,
             'format': 'best',
+            'cookiefile': 'yt-cookies.txt',
             # Add custom headers here
             'http_headers': HEADERS
         }
